@@ -1,7 +1,5 @@
 #include <stdio.h>
-
 #include "Config.h"
-
 
 int main(int argc, char **argv)
 {
@@ -11,11 +9,15 @@ int main(int argc, char **argv)
 
     config.setConfigFileName("config.ini");
 
-    // Add some sections for demonstration
+    // Add some sections and keys for demonstration
     config.addSection("Language");
-    config.addSection("Jobs");
+    config.set("Language", "lang", "C++");
+    config.set("Language", "jobs", "programmer");
 
-    // Clear the configuration file
+    // clear back of config.ini -> config.ini.bak
+    config.backupConfig();
+
+    // clear config.ini file
     config.clearConfig();
 
     getchar();

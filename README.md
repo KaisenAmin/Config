@@ -19,6 +19,8 @@ This is a C language library for managing configuration files. It provides funct
 * **Count sections in the configuration file:** This function returns the number of sections in the configuration file. It is useful to know the number of different sections in the configuration file.
 * **Clear all sections from the configuration file:** This function deletes all sections and their corresponding keys from the configuration file. It is useful when you want to start with a clean configuration file.
 
+* **Create a backup of the configuration file:** This function creates a backup of the current configuration file. It is useful when you want to save the current state of the configuration file before making some changes, and you want to be able to restore it if something goes wrong.
+
 ## Usage
 
 First, initialize a `Config` object:
@@ -82,7 +84,7 @@ First, initialize a `Config` object:
 
     ```
 
-2. You can use the isEmpty() function like this:
+2. You can use the "isEmpty" function like this:
 
     ```c
     if (config.isEmpty())
@@ -112,7 +114,7 @@ First, initialize a `Config` object:
     }
     ```
 
-3. sectionExists function to check whether a certain section exists in the configuration file:
+3. "sectionExists" function to check whether a certain section exists in the configuration file:
 
     ```c
     #include <stdio.h>
@@ -135,7 +137,7 @@ First, initialize a `Config` object:
     }
     ```
 
-4.  below demonstrates how to use the keyCount function to count the keys in a given section:
+4.  below demonstrates how to use the "keyCount" function to count the keys in a given section:
 
     ```c
     #include <stdio.h>
@@ -162,7 +164,7 @@ First, initialize a `Config` object:
     }
     ```
 
-5.  example below shows how to use the sectionCount function to count the sections in the configuration file:
+5.  example below shows how to use the "sectionCount" function to count the sections in the configuration file:
 
     ```c
     #include <stdio.h>
@@ -190,7 +192,7 @@ First, initialize a `Config` object:
     }
     ```
 
-6. example below shows how to use the clearConfig function to delete all sections from the configuration file:
+6. example below shows how to use the "clearConfig" function to delete all sections from the configuration file:
 
     ```c
     #include <stdio.h>
@@ -211,6 +213,36 @@ First, initialize a `Config` object:
         config.addSection("Jobs");
 
         // Clear the configuration file
+        config.clearConfig();
+
+        getchar();
+        return 0;
+    }
+    ```
+
+7. create backup from config file with "backupConfig":
+
+    ```c
+    #include <stdio.h>
+    #include "Config.h"
+
+    int main(int argc, char **argv)
+    {
+        Config config;
+
+        initializeConfig(&config); // just belong this config 
+
+        config.setConfigFileName("config.ini");
+
+        // Add some sections and keys for demonstration
+        config.addSection("Language");
+        config.set("Language", "lang", "C++");
+        config.set("Language", "jobs", "programmer");
+
+        // clear back of config.ini -> config.ini.bak
+        config.backupConfig();
+
+        // clear config.ini file
         config.clearConfig();
 
         getchar();

@@ -35,6 +35,7 @@ typedef struct Config
     uint32_t (*keyCount)(const char *sectionName);
     uint32_t (*sectionCount)();
     void (*clearConfig)();
+    void (*backupConfig)();
 
 } Config;
 #pragma pack (pop)
@@ -49,6 +50,7 @@ void writeSetForSection(const char* key, const char *value, const char *sectionN
 bool checkSet(const char* key, const char *value, const char* sectionName);
 char* substr(const char *src, int m, int n);
 
+static void backupConfig();
 static void clearConfig();
 static uint32_t sectionCount();
 static uint32_t keyCount(const char *sectionName);
