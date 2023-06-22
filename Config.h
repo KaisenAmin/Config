@@ -32,6 +32,7 @@ typedef struct Config
     bool (*isEmpty)();
     void (*getKeysFromSection)(const char *sectionName);
     bool (*sectionExists)(const char *sectionName);
+    uint32_t (*keyCount)(const char *sectionName);
 
 } Config;
 #pragma pack (pop)
@@ -46,6 +47,7 @@ void writeSetForSection(const char* key, const char *value, const char *sectionN
 bool checkSet(const char* key, const char *value, const char* sectionName);
 char* substr(const char *src, int m, int n);
 
+static uint32_t keyCount(const char *sectionName);
 static bool sectionExists(const char *sectionName);
 static void getKeysFromSection(const char *sectionName);
 static bool isEmpty();

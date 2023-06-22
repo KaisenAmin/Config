@@ -17,6 +17,7 @@ void initializeConfig(Config *configObject)
     configObject->isEmpty = isEmpty;
     configObject->getKeysFromSection = getKeysFromSection;
     configObject->sectionExists = sectionExists;
+    configObject->keyCount = keyCount;
 
     this = configObject;
 }
@@ -710,4 +711,56 @@ static bool sectionExists(const char *sectionName)
     }
 
     return false;
+}
+
+static uint32_t keyCount(const char *sectionName) 
+{
+    FILE *readerFile = fopen(this->fileName, "r");
+    uint32_t keyCount = 0;
+    bool inSection = false;
+    
+    if (readerFile != NULL) 
+    {
+        char lineStr[SECTION_SIZE + SECTION_SIZE];
+        char *section = (char *) malloc(sizeof(char) * strlen(sectionName) + 3);
+
+        if (section != NULL) 
+        {
+            sprintf(section, "[%s]", sectionName);
+
+            while (fgets(lineStr, SECTION_SIZE + SECTION_SIZE, readerFile) != NULL) 
+            {
+                // If the current line is the section we're looking for
+                if (strstr(lineStr, section) != NULL) 
+                {
+                    inSection = true;
+                    continue;
+                }
+                
+                // If the current line is a section but not the section we're looking for
+                if (strstr(lineStr, "[") != NULL && inSection) 
+                    break;
+         
+
+                // If we're inside the section and the line contains a '=' sign (indicating it's a key)
+                if(inSection && strstr(lineStr, "=") != NULL) 
+                    keyCount++;
+            }
+
+            fclose(readerFile);
+            free(section);
+            return keyCount;
+        } 
+        else 
+        {
+            fprintf(stderr, "Cannot allocate memory\n");
+            fclose(readerFile);
+            return 0;
+        }
+    } 
+    else 
+    {
+        fprintf(stderr, "Cannot open %s file\n", this->fileName);
+        return 0;
+    }
 }

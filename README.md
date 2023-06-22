@@ -15,6 +15,7 @@ This is a C language library for managing configuration files. It provides funct
 * **Check if the configuration file is empty:** Use isEmpty() to check if the configuration file is empty (contains no sections) or not.
 * **Get keys from a section:** Retrieves and prints all keys in a specified section of the configuration file.
 * **Check if a section exists:** This function checks if a specific section exists in the configuration file. This can be useful to avoid errors when trying to get or set keys in non-existent sections.
+* **Count keys in a section:** This function returns the number of keys in a specific section. This can be useful for understanding how many settings are in a specific section.
 
 ## Usage
 
@@ -128,6 +129,33 @@ First, initialize a `Config` object:
             config.addSection("Section1");
         
         getchar();
+        return 0;
+    }
+    ```
+
+4.  below demonstrates how to use the keyCount function to count the keys in a given section:
+
+    ```c
+    #include <stdio.h>
+    #include "Config.h"
+
+    int main(int argc, char **argv)
+    {
+        Config config;
+
+        initializeConfig(&config); // just belong this config 
+
+        config.setConfigFileName("config.ini");
+
+        // Add some sections and keys for demonstration
+        config.addSection("Language");
+        config.set("Language", "lang", "C++");
+        config.set("Language", "jobs", "programmer");
+
+        // Count keys in 'Language' section
+        uint32_t keyCount = config.keyCount("Language");
+        printf("There are %d keys in 'Language' section\n", keyCount);
+
         return 0;
     }
     ```
