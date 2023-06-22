@@ -39,6 +39,10 @@ int main(int argc, char **argv)
     else
         printf("Key does not exist\n");
 
+    if (config.isEmpty())
+        printf("Config is empty\n");
+    else 
+        printf("Config is not empty\n");
  
     config.showConfig();
     

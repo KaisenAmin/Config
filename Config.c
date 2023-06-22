@@ -14,6 +14,7 @@ void initializeConfig(Config *configObject)
     configObject->deleteKey = deleteKey;
     configObject->update = update;
     configObject->keyExists = keyExists;
+    configObject->isEmpty = isEmpty;
 
     this = configObject;
 }
@@ -558,56 +559,69 @@ static void update(const char* sectionName, const char *key, const char *value)
 
 static bool keyExists(const char *sectionName, const char *key) 
 {
+    bool keyFound = false; 
     FILE *readerFile = fopen(this->fileName, "r");
-
-    if (readerFile != NULL) 
-    {
-        char lineStr[SECTION_SIZE + SECTION_SIZE];
-        char *section = (char *) malloc(sizeof(char) * strlen(sectionName) + 3);
-
-        if (section != NULL) 
-        {
-            sprintf(section, "[%s]", sectionName);
-            bool flag = false;
-            uint32_t counter = 0;
-
-            while (fgets(lineStr, SECTION_SIZE + SECTION_SIZE, readerFile) != NULL) 
-            {
-                if (counter == 2 && flag)
-                    break;
-                if (strstr(lineStr, section) != NULL) 
-                {
-                    flag = true;
-                    counter++;
-                }
-                else if (strstr(lineStr, "[") != NULL && flag)
-                    counter++;
-                else if(flag && strstr(lineStr, key) != NULL) 
-                {
-                    printf("find it \n");
-                    fclose(readerFile);
-                    // free(section);
-                    return true;
-                }
-            }
-
-            fclose(readerFile);
-            // free(section);
-        } 
-        else 
-        {
-            fprintf(stderr, "Can not allocate memory\n");
-            fclose(readerFile);
-            return false;
-        }
-    } 
-    else 
+    if (readerFile == NULL) 
     {
         fprintf(stderr, "Can not open %s file\n", this->fileName);
         return false;
     }
 
+    char lineStr[SECTION_SIZE + SECTION_SIZE];
+    char *section = (char *) malloc(sizeof(char) * (strlen(sectionName) + 3));
+
+    if (section == NULL) 
+    {
+        fprintf(stderr, "Can not allocate memory\n");
+        fclose(readerFile);
+        return false;
+    }
+
+    sprintf(section, "[%s]", sectionName);
+    bool flag = false;
+    uint32_t counter = 0;
+
+    while (fgets(lineStr, SECTION_SIZE + SECTION_SIZE, readerFile) != NULL) 
+    {
+        if (counter == 2 && flag)
+            break;
+        if (strstr(lineStr, section) != NULL) 
+        {
+            flag = true;
+            counter++;
+        }
+        else if (strstr(lineStr, "[") != NULL && flag)
+            counter++;
+        else if(flag && strstr(lineStr, key) != NULL) 
+        {
+            keyFound = true;
+            break;
+        }
+    }
+
+    free(section);
     fclose(readerFile);
-    return false;
+    return keyFound;
 }
 
+static bool isEmpty() 
+{
+    printf("in isEmpty");
+    FILE *readerFile = fopen(this->fileName, "r");
+    if (readerFile == NULL) 
+    {
+        fprintf(stderr, "Cannot open file\n");
+        exit(-1);
+    }
+
+    // Move the file pointer to the end of the file
+    fseek(readerFile, 0, SEEK_END);
+
+    // Get the position of the file pointer which is also the size of the file
+    long fileSize = ftell(readerFile);
+
+    fclose(readerFile);
+
+    // If the file size is 0, then the file is empty
+    return fileSize == 0;
+}

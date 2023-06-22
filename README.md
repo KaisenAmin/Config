@@ -12,6 +12,7 @@ This is a C language library for managing configuration files. It provides funct
 * **Deleting a key-value pair:** Delete a specific key-value pair from a given section.
 * **Updating a key-value pair:** Update a specefic value from given section and key.
 * **Check if key-exists:** Check if specefic section and key is exists or not.
+* **Check if the configuration file is empty:** Use isEmpty() to check if the configuration file is empty (contains no sections) or not.
 
 ## Usage
 
@@ -73,5 +74,15 @@ First, initialize a `Config` object:
         getchar();
         return 0;
     }
+
+    ```
+
+2. You can use the isEmpty() function like this:
+
+    ```c
+    if (config.isEmpty())
+        printf("Config is empty\n");
+    else 
+        printf("Config is not empty\n");
 
     ```
