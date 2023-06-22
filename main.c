@@ -19,6 +19,7 @@ int main(int argc, char **argv)
 
     // clear config.ini file
     config.clearConfig();
+    config.loadBackup();
 
     getchar();
     return 0;

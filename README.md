@@ -21,6 +21,8 @@ This is a C language library for managing configuration files. It provides funct
 
 * **Create a backup of the configuration file:** This function creates a backup of the current configuration file. It is useful when you want to save the current state of the configuration file before making some changes, and you want to be able to restore it if something goes wrong.
 
+* **Load a backup of the configuration file:** This function loads a backup of the configuration file and replaces the current configuration with the backup one. It is useful when some changes in the configuration lead to errors and you want to restore the previous valid configuration.
+
 ## Usage
 
 First, initialize a `Config` object:
@@ -248,4 +250,26 @@ First, initialize a `Config` object:
         getchar();
         return 0;
     }
+    ```
+
+8. load from backupfile with "loadBackup":
+
+    ```c 
+        Config config;
+
+        initializeConfig(&config); // just belong this config 
+
+        config.setConfigFileName("config.ini");
+
+        // Add some sections and keys for demonstration
+        config.addSection("Language");
+        config.set("Language", "lang", "C++");
+        config.set("Language", "jobs", "programmer");
+
+        // clear back of config.ini -> config.ini.bak
+        config.backupConfig();
+
+        // clear config.ini file
+        config.clearConfig();
+        config.loadBackup();
     ```

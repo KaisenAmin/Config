@@ -21,7 +21,8 @@ void initializeConfig(Config *configObject)
     configObject->sectionCount = sectionCount;
     configObject->clearConfig = clearConfig;
     configObject->backupConfig = backupConfig;
-    
+    configObject->loadBackup = loadBackup;
+
     this = configObject;
 }
 
@@ -827,6 +828,36 @@ static void backupConfig()
     char ch;
     while ((ch = fgetc(originalFile)) != EOF) 
         fputc(ch, backupFile);
+
+    fclose(originalFile);
+    fclose(backupFile);
+}
+
+static void loadBackup() 
+{
+    char backupFileName[256];
+    sprintf(backupFileName, "%s.bak", this->fileName);
+
+    FILE *originalFile = fopen(this->fileName, "w");
+    FILE *backupFile = fopen(backupFileName, "r");
+
+    if (originalFile == NULL) 
+    {
+        fprintf(stderr, "Cannot open original file %s\n", this->fileName);
+        return;
+    }
+
+    if (backupFile == NULL) 
+    {
+        fprintf(stderr, "Cannot open backup file %s\n", backupFileName);
+        fclose(originalFile);
+        return;
+    }
+
+    char ch;
+    while ((ch = fgetc(backupFile)) != EOF) 
+        fputc(ch, originalFile);
+    
 
     fclose(originalFile);
     fclose(backupFile);
