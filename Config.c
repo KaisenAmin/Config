@@ -1,6 +1,6 @@
-#include "KConfig.h"
+#include "Config.h"
 
-void initializeKConfig(KConfig *configObject)
+void initializeConfig(Config *configObject)
 {
     configObject->showConfig = readFile;
     configObject->writeConfig = writeFile;
@@ -10,6 +10,7 @@ void initializeKConfig(KConfig *configObject)
     configObject->get = get;
     configObject->counterList = 0;
     configObject->keysCounter = 0;
+    configObject->deleteSection = deleteSection;
 
     this = configObject;
 }
@@ -387,6 +388,59 @@ char* get(const char *sectionName, const char *key)
             exit(-1);
         }
 
+    }
+    else 
+    {
+        fprintf(stderr, "Can not open %s file\n", this->fileName);
+        exit(-1);
+    }
+}
+
+static void deleteSection(const char *sectionName)
+{
+    FILE *readerFile = fopen(this->fileName, "r");
+    FILE *writerFile = fopen("./tempConfig.ini", "w");
+    
+    if (readerFile != NULL && writerFile != NULL)
+    {
+        char lineStr[SECTION_SIZE];
+        char section[SECTION_SIZE];
+
+        sprintf(section, "[%s]", sectionName);
+
+        bool insideSection = false;
+
+        while (fgets(lineStr, SECTION_SIZE, readerFile) != NULL)
+        {
+            if (strstr(lineStr, section) != NULL)
+            {
+                insideSection = true;
+                continue;
+            }
+            
+            if (insideSection && strstr(lineStr, "[") != NULL)
+            {
+                insideSection = false;
+            }
+
+            if (!insideSection)
+            {
+                fprintf(writerFile, "%s", lineStr);
+            }
+        }
+
+        fclose(readerFile);
+        fclose(writerFile);
+
+        if (remove(this->fileName) != 0)
+        {
+            perror("Error deleting file");
+        }
+
+        if (rename("./tempConfig.ini", this->fileName) != 0)
+        {
+            perror("Error renaming file");
+        }
     }
     else 
     {

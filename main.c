@@ -1,13 +1,13 @@
 #include <stdio.h>
 
-#include "KConfig.h"
+#include "Config.h"
 
 
 int main(int argc, char **argv)
 {
-    KConfig config;
+    Config config;
 
-    initializeKConfig(&config); // just belong this config 
+    initializeConfig(&config); // just belong this config 
 
     config.setConfigFileName("config.ini");
     config.addSection("Language");
@@ -24,6 +24,8 @@ int main(int argc, char **argv)
     config.set("Amin", "Best", "Scientis");
     config.set("Amin", "Ip", "192.168.90.90");
     config.set("Love", "person", "I dont know");
+    
+    config.deleteSection("Amin");
 
     printf("%s\n", config.get("Language", "jobs"));
     printf("%s\n", config.get("Jobs", "jobss"));
