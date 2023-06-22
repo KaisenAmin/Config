@@ -26,8 +26,23 @@ void initializeConfig(Config *configObject)
     configObject->renameSection = renameSection;
     configObject->renameKey = renameKey;
     configObject->totalKeyCount = totalKeyCount;
+    configObject->merge = merge;
 
     this = configObject;
+}
+
+char* trim(char* s)
+{
+    while (isspace((unsigned char) *s)) s++;  // Skip leading whitespace
+
+    if (*s)  // Nonempty string?
+    {
+        char* back = s + strlen(s);
+        while (isspace((unsigned char) *--back) );  // Skip trailing whitespace
+        *(back+1) = '\0';  // Null terminate
+    }
+
+    return s;
 }
 
 char* substr(const char *src, int m, int n)
@@ -199,7 +214,12 @@ void writeSetForSection(const char *key, const char *value, const char *sectionN
             {
 
                 fprintf(writerFile, "%s", lineStr);
-                fprintf(writerFile, "\t%s = \"%s\"\n", key, value);
+                
+                if (strstr(value, "\"") != NULL)
+                    fprintf(writerFile, "\t%s = %s\n", key, value);
+                
+                else
+                    fprintf(writerFile, "\t%s = \"%s\"\n", key, value);
                 flag = true;
             }
             else
@@ -235,6 +255,7 @@ void writeSetForSection(const char *key, const char *value, const char *sectionN
         exit(-1);
     }
 }
+
 
 static void setFileName(const char *configFileName)
 {
@@ -1032,3 +1053,52 @@ static uint32_t totalKeyCount()
     fclose(file);
     return totalCount;
 }
+
+static void merge(const char* importFileName) 
+{
+    // Open the import file
+    FILE* importFile = fopen(importFileName, "r");
+    if (!importFile) 
+    {
+        fprintf(stderr, "Cannot open import file: %s\n", importFileName);
+        return;
+    }
+
+    char line[SECTION_SIZE * 2];
+    char currentSection[SECTION_SIZE] = "";
+
+    // Read the import file line by line
+    while (fgets(line, sizeof(line), importFile)) 
+    {
+        // If the line defines a section
+        if (line[0] == '[') 
+        {
+            strncpy(currentSection, line + 1, strcspn(line + 1, "]"));
+            currentSection[strcspn(line + 1, "]")] = '\0'; // Ensuring null termination
+
+            // If the section doesn't exist, add it
+            if (!sectionExists(currentSection)) 
+            {
+                addSection(currentSection);
+            }
+        }
+        // If the line defines a key-value pair
+        else if (strchr(line, '=') != NULL) 
+        {
+            char* key = strtok(line, "=");
+            char* value = strtok(NULL, "=");
+            // Remove leading and trailing whitespaces
+            key = trim(key);
+            value = trim(value);
+
+            // If the key doesn't exist, add the key-value pair
+            if (!keyExists(currentSection, key)) 
+            {
+                set(currentSection, key, value);
+            }
+        }
+    }
+    fclose(importFile);
+}
+
+

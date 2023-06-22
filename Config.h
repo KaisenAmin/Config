@@ -7,9 +7,12 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <direct.h>
+#include <ctype.h>
 
 #define BRACET_NUMBER 2
 #define SECTION_SIZE 256
+#define MAX_LINES 1000
+#define LINE_SIZE 1000
 
 #pragma pack (push, 1)
 typedef struct Config
@@ -42,6 +45,7 @@ typedef struct Config
     void (*renameSection)(const char *oldSectionName, const char *newSectionName);
     void (*renameKey)(const char *sectionName, const char *oldKeyName, const char *newKeyName);
     uint32_t (*totalKeyCount)();
+    void (*merge)(const char* importFileName);
 
 } Config;
 #pragma pack (pop)
@@ -55,7 +59,10 @@ void searchSectionInFile(const char* sectionName, int *position, int *fileCursor
 void writeSetForSection(const char* key, const char *value, const char *sectionName, uint32_t pos, int fileCursorPos);
 bool checkSet(const char* key, const char *value, const char* sectionName);
 char* substr(const char *src, int m, int n);
+char* trim(char* s);
+void writeToFile(const char *sectionName, const char *key, const char *value);
 
+static void merge(const char* importFileName);
 static uint32_t totalKeyCount();
 static void renameKey(const char *sectionName, const char *oldKeyName, const char *newKeyName);
 static void renameSection(const char *oldSectionName, const char *newSectionName);
