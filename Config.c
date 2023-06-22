@@ -23,6 +23,7 @@ void initializeConfig(Config *configObject)
     configObject->backupConfig = backupConfig;
     configObject->loadBackup = loadBackup;
     configObject->clearSection = clearSection;
+    configObject->moveSection = moveSection;
 
     this = configObject;
 }
@@ -908,4 +909,37 @@ static void clearSection(const char* sectionName)
     fclose(tempFile);
     remove(this->fileName);
     rename("temp.ini", this->fileName);
+}
+
+static void moveSection(const char *oldSectionName, const char *newSectionName) 
+{
+    FILE *readerFile = fopen(this->fileName, "r+");
+    if (readerFile != NULL) 
+    {
+        char lineStr[SECTION_SIZE * 2];
+        char *section = (char *) malloc(sizeof(char) * strlen(oldSectionName) + 3);
+        if (section != NULL) 
+        {
+            sprintf(section, "[%s]", oldSectionName);
+            while (fgets(lineStr, SECTION_SIZE * 2, readerFile) != NULL) 
+            {
+                if (strstr(lineStr, section) != NULL) 
+                {
+                    fseek(readerFile, -(long)strlen(lineStr), SEEK_CUR);
+                    fprintf(readerFile, "%s]\n", newSectionName);
+                    break;
+                }
+            }
+            free(section);
+        } 
+        else 
+        {
+            fprintf(stderr, "Can not allocate memory\n");
+        }
+        fclose(readerFile);
+    } 
+    else 
+    {
+        fprintf(stderr, "Can not open %s file\n", this->fileName);
+    }
 }

@@ -38,6 +38,7 @@ typedef struct Config
     void (*backupConfig)();
     void (*loadBackup)();
     void (*clearSection)(const char* sectionName);
+    void (*moveSection)(const char *oldSectionName, const char *newSectionName);
 
 } Config;
 #pragma pack (pop)
@@ -52,6 +53,7 @@ void writeSetForSection(const char* key, const char *value, const char *sectionN
 bool checkSet(const char* key, const char *value, const char* sectionName);
 char* substr(const char *src, int m, int n);
 
+static void moveSection(const char *oldSectionName, const char *newSectionName);
 static void clearSection(const char* sectionName);
 static void loadBackup();
 static void backupConfig();
