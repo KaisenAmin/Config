@@ -25,8 +25,9 @@ This is a C language library for managing configuration files. It provides funct
 
 * **Clear Section Content:**To clear a section from all of its key-value pairs, use the clearSection function. This will keep the section, but remove all key-value pairs within it.
 
-* **Move Section:**The moveSection function in the Config struct allows you to rename a section in the configuration file. It searches for the specified section, stores its content, deletes the section, and then creates a new section with the desired name.
+* **Rename Section:**The renameSection function in the Config struct allows you to rename a section in the configuration file. It searches for the specified section, stores its content, deletes the section, and then creates a new section with the desired name.
 
+* **Rename Key Feature:**This feature is implemented as a function named renameKey, which provides the functionality to rename a key within a particular section in the configuration file.
 
 ## Usage
 
@@ -311,7 +312,7 @@ First, initialize a `Config` object:
     }
     ```
 
-10. "moveSection" for change name of section to new one:
+10. "renameSection" for change name of section to new one:
 
     ```c
     #include <stdio.h>
@@ -338,10 +339,34 @@ First, initialize a `Config` object:
         config.clearSection("Section1");
         config.showConfig();
 
-        config.moveSection("Section2", "Section3");
+        config.renameSection("Section2", "Section3");
         config.showConfig();
         
         getchar();
         return 0;
     }
+    ```
+
+11. "renameKey" function rename the name of key in section:
+
+    ```c 
+    Config config;
+
+    initializeConfig(&config); // just belong this config 
+
+    config.setConfigFileName("config.ini");
+
+    config.addSection("Section1");
+    config.addSection("Section2");
+
+    config.set("Section1", "key1", "value1");
+    config.set("Section1", "key2", "value2");
+    config.set("Section1", "key3", "value3");
+    config.set("Section2", "key4", "value4");
+    config.set("Section2", "key5", "value5");
+
+    config.showConfig();
+
+    config.renameKey("Section1", "key1", "key6");  // Rename key1 to key6 in Section1
+    config.showConfig();
     ```

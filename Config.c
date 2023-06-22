@@ -24,6 +24,7 @@ void initializeConfig(Config *configObject)
     configObject->loadBackup = loadBackup;
     configObject->clearSection = clearSection;
     configObject->renameSection = renameSection;
+    configObject->renameKey = renameKey;
 
     this = configObject;
 }
@@ -942,4 +943,67 @@ static void renameSection(const char *oldSectionName, const char *newSectionName
     {
         fprintf(stderr, "Can not open %s file\n", this->fileName);
     }
+}
+
+static void renameKey(const char *sectionName, const char *oldKeyName, const char *newKeyName) 
+{
+    if (!this->sectionExists(sectionName)) 
+    {
+        fprintf(stderr, "Section %s does not exist\n", sectionName);
+        return;
+    }
+
+    if (!this->keyExists(sectionName, oldKeyName)) 
+    {
+        fprintf(stderr, "Key %s does not exist in section %s\n", oldKeyName, sectionName);
+        return;
+    }
+
+    if (this->keyExists(sectionName, newKeyName)) 
+    {
+        fprintf(stderr, "Key %s already exists in section %s\n", newKeyName, sectionName);
+        return;
+    }
+
+    FILE *file = fopen(this->fileName, "r");
+    FILE *tempFile = fopen("temp.ini", "w");
+
+    if (file == NULL || tempFile == NULL) 
+    {
+        fprintf(stderr, "Cannot open the file\n");
+        return;
+    }
+
+    char lineStr[SECTION_SIZE + SECTION_SIZE];
+    bool isInSection = false;
+
+    while (fgets(lineStr, SECTION_SIZE + SECTION_SIZE, file) != NULL) 
+    {
+        // Check if it's the start of the section
+        if (strstr(lineStr, sectionName) != NULL) 
+        {
+            isInSection = true;
+            fputs(lineStr, tempFile);
+            continue;
+        }
+
+        // Check if it's the end of the section
+        if (strstr(lineStr, "[") != NULL && isInSection) 
+            isInSection = false;
+
+        // If it's in the section, check if the line contains the old key
+        if (isInSection && strstr(lineStr, oldKeyName) != NULL) 
+        {
+            fprintf(tempFile, "\t%s = %s\n", newKeyName, strchr(lineStr, '=') + 1);
+        } 
+        else 
+        {
+            fputs(lineStr, tempFile);
+        }
+    }
+
+    fclose(file);
+    fclose(tempFile);
+    remove(this->fileName);
+    rename("temp.ini", this->fileName);
 }

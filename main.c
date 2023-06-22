@@ -19,12 +19,10 @@ int main(int argc, char **argv)
     config.set("Section2", "key5", "value5");
 
     config.showConfig();
-    config.clearSection("Section1");
+
+    config.renameKey("Section1", "key1", "key6");  // Rename key1 to key6 in Section1
     config.showConfig();
 
-    config.renameSection("Section2", "Section3");
-    config.showConfig();
-    
     getchar();
     return 0;
 }
