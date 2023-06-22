@@ -16,6 +16,8 @@ This is a C language library for managing configuration files. It provides funct
 * **Get keys from a section:** Retrieves and prints all keys in a specified section of the configuration file.
 * **Check if a section exists:** This function checks if a specific section exists in the configuration file. This can be useful to avoid errors when trying to get or set keys in non-existent sections.
 * **Count keys in a section:** This function returns the number of keys in a specific section. This can be useful for understanding how many settings are in a specific section.
+* **Count sections in the configuration file:** This function returns the number of sections in the configuration file. It is useful to know the number of different sections in the configuration file.
+* **Clear all sections from the configuration file:** This function deletes all sections and their corresponding keys from the configuration file. It is useful when you want to start with a clean configuration file.
 
 ## Usage
 
@@ -156,6 +158,62 @@ First, initialize a `Config` object:
         uint32_t keyCount = config.keyCount("Language");
         printf("There are %d keys in 'Language' section\n", keyCount);
 
+        return 0;
+    }
+    ```
+
+5.  example below shows how to use the sectionCount function to count the sections in the configuration file:
+
+    ```c
+    #include <stdio.h>
+
+    #include "Config.h"
+
+
+    int main(int argc, char **argv)
+    {
+        Config config;
+
+        initializeConfig(&config); // just belong this config 
+
+        config.setConfigFileName("config.ini");
+
+        // Add some sections for demonstration
+        config.addSection("Language");
+        config.addSection("Jobs");
+
+        // Count sections in the configuration file
+        uint32_t sectionCount = config.sectionCount();
+        printf("There are %d sections in the configuration file\n", sectionCount);
+
+        return 0;
+    }
+    ```
+
+6. example below shows how to use the clearConfig function to delete all sections from the configuration file:
+
+    ```c
+    #include <stdio.h>
+
+    #include "Config.h"
+
+
+    int main(int argc, char **argv)
+    {
+        Config config;
+
+        initializeConfig(&config); // just belong this config 
+
+        config.setConfigFileName("config.ini");
+
+        // Add some sections for demonstration
+        config.addSection("Language");
+        config.addSection("Jobs");
+
+        // Clear the configuration file
+        config.clearConfig();
+
+        getchar();
         return 0;
     }
     ```

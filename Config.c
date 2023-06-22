@@ -18,6 +18,8 @@ void initializeConfig(Config *configObject)
     configObject->getKeysFromSection = getKeysFromSection;
     configObject->sectionExists = sectionExists;
     configObject->keyCount = keyCount;
+    configObject->sectionCount = sectionCount;
+    configObject->clearConfig = clearConfig;
 
     this = configObject;
 }
@@ -763,4 +765,39 @@ static uint32_t keyCount(const char *sectionName)
         fprintf(stderr, "Cannot open %s file\n", this->fileName);
         return 0;
     }
+}
+
+static uint32_t sectionCount() 
+{
+    FILE *readerFile = fopen(this->fileName, "r");
+    uint32_t sectionCount = 0;
+
+    if (readerFile != NULL) 
+    {
+        char lineStr[SECTION_SIZE + SECTION_SIZE];
+
+        while (fgets(lineStr, SECTION_SIZE + SECTION_SIZE, readerFile) != NULL) 
+        {
+            // If the current line is a section
+            if (strstr(lineStr, "[") != NULL) 
+                sectionCount++;
+        }
+
+        fclose(readerFile);
+        return sectionCount;
+    } 
+    else 
+    {
+        fprintf(stderr, "Cannot open %s file\n", this->fileName);
+        return 0;
+    }
+}
+
+static void clearConfig() 
+{
+    FILE *file = fopen(this->fileName, "w");
+    if (file != NULL) 
+        fclose(file);
+    else 
+        fprintf(stderr, "Cannot open %s file\n", this->fileName);
 }

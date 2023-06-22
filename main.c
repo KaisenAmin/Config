@@ -1,5 +1,7 @@
 #include <stdio.h>
+
 #include "Config.h"
+
 
 int main(int argc, char **argv)
 {
@@ -9,14 +11,13 @@ int main(int argc, char **argv)
 
     config.setConfigFileName("config.ini");
 
-    // Add some sections and keys for demonstration
+    // Add some sections for demonstration
     config.addSection("Language");
-    config.set("Language", "lang", "C++");
-    config.set("Language", "jobs", "programmer");
+    config.addSection("Jobs");
 
-    // Count keys in 'Language' section
-    uint32_t keyCount = config.keyCount("Language");
-    printf("There are %d keys in 'Language' section\n", keyCount);
+    // Clear the configuration file
+    config.clearConfig();
 
+    getchar();
     return 0;
 }
