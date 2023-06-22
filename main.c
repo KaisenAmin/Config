@@ -9,17 +9,18 @@ int main(int argc, char **argv)
 
     config.setConfigFileName("config.ini");
 
-    // Add some sections and keys for demonstration
-    config.addSection("Language");
-    config.set("Language", "lang", "C++");
-    config.set("Language", "jobs", "programmer");
+    config.addSection("Section1");
+    config.addSection("Section2");
 
-    // clear back of config.ini -> config.ini.bak
-    config.backupConfig();
+    config.set("Section1", "key1", "value1");
+    config.set("Section1", "key2", "value2");
+    config.set("Section1", "key3", "value3");
+    config.set("Section2", "key4", "value4");
+    config.set("Section2", "key5", "value5");
 
-    // clear config.ini file
-    config.clearConfig();
-    config.loadBackup();
+    config.showConfig();
+    config.clearSection("Section1");
+    config.showConfig();
 
     getchar();
     return 0;

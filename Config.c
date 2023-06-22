@@ -22,6 +22,7 @@ void initializeConfig(Config *configObject)
     configObject->clearConfig = clearConfig;
     configObject->backupConfig = backupConfig;
     configObject->loadBackup = loadBackup;
+    configObject->clearSection = clearSection;
 
     this = configObject;
 }
@@ -861,4 +862,50 @@ static void loadBackup()
 
     fclose(originalFile);
     fclose(backupFile);
+}
+
+static void clearSection(const char* sectionName) 
+{
+    if (!checkSectionList(sectionName)) 
+    {
+        fprintf(stderr, "Section %s does not exist\n", sectionName);
+        return;
+    }
+
+    int position, fileCursorPos;
+    searchSectionInFile(sectionName, &position, &fileCursorPos);
+
+    FILE *file = fopen(this->fileName, "r");
+    FILE *tempFile = fopen("temp.ini", "w");
+
+    if (file == NULL || tempFile == NULL) 
+    {
+        fprintf(stderr, "Cannot open the file\n");
+        return;
+    }
+
+    char lineStr[SECTION_SIZE + SECTION_SIZE];
+    bool isInSection = false;
+
+    while (fgets(lineStr, SECTION_SIZE + SECTION_SIZE, file) != NULL) 
+    {
+        if (strstr(lineStr, sectionName) != NULL) 
+        {
+            isInSection = true;
+            fputs(lineStr, tempFile);
+            continue;
+        }
+
+        if (strstr(lineStr, "[") != NULL) 
+            isInSection = false;
+        
+        if (!isInSection) 
+            fputs(lineStr, tempFile);
+        
+    }
+
+    fclose(file);
+    fclose(tempFile);
+    remove(this->fileName);
+    rename("temp.ini", this->fileName);
 }

@@ -23,6 +23,8 @@ This is a C language library for managing configuration files. It provides funct
 
 * **Load a backup of the configuration file:** This function loads a backup of the configuration file and replaces the current configuration with the backup one. It is useful when some changes in the configuration lead to errors and you want to restore the previous valid configuration.
 
+* **Clear Section Content:**To clear a section from all of its key-value pairs, use the clearSection function. This will keep the section, but remove all key-value pairs within it.
+
 ## Usage
 
 First, initialize a `Config` object:
@@ -272,4 +274,36 @@ First, initialize a `Config` object:
         // clear config.ini file
         config.clearConfig();
         config.loadBackup();
+    ```
+
+9. "clearSection" function for delete all key-value pair in a section:
+
+    ```c 
+    #include <stdio.h>
+    #include "Config.h"
+
+    int main(int argc, char **argv)
+    {
+        Config config;
+
+        initializeConfig(&config); // just belong this config 
+
+        config.setConfigFileName("config.ini");
+
+        config.addSection("Section1");
+        config.addSection("Section2");
+
+        config.set("Section1", "key1", "value1");
+        config.set("Section1", "key2", "value2");
+        config.set("Section1", "key3", "value3");
+        config.set("Section2", "key4", "value4");
+        config.set("Section2", "key5", "value5");
+
+        config.showConfig();
+        config.clearSection("Section1");
+        config.showConfig();
+
+        getchar();
+        return 0;
+    }
     ```
