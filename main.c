@@ -25,6 +25,7 @@ int main(int argc, char **argv)
     config.set("Amin", "Ip", "192.168.90.90");
     config.set("Love", "person", "I dont know");
     
+
     // delete a key-value pair
     config.deleteKey("Language", "Web");
     
@@ -33,18 +34,12 @@ int main(int argc, char **argv)
     // update a key-value pair
     config.update("Language", "lang", "C++");
 
-    if (config.keyExists("Language1", "lang"))
+    if (config.keyExists("Language", "lang"))
         printf("Key exists\n");
     else
         printf("Key does not exist\n");
 
-
-    printf("%s\n", config.get("Language1", "jobs"));
-    printf("%s\n", config.get("Jobs", "jobss"));
-    // the following two will print nothing as the section "Amin" has been deleted
-    printf("%s\n", config.get("Amin", "Ip"));
-    printf("%s\n", config.get("Amin", "Best"));
-
+ 
     config.showConfig();
     
     getchar();

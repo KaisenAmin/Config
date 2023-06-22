@@ -19,7 +19,7 @@ First, initialize a `Config` object:
 
 ### Examples 
 
-1. Create, add sections, delete sections, and delete a key-value pair, and update key-value pair
+1. Create, add sections, delete sections, and delete a key-value pair, and update key-value pair, check key is exists or not in section
 
     ```c
     #include <stdio.h>

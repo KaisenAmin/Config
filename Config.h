@@ -29,7 +29,7 @@ typedef struct Config
     void (*deleteKey)(const char *sectionName, const char *key);
     void (*update)(const char* sectionName, const char *key, const char *value);
     bool (*keyExists)(const char *sectionName, const char *key);
-    
+
 } Config;
 #pragma pack (pop)
 

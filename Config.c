@@ -43,6 +43,7 @@ bool checkSectionList(const char *sectionName)
     {
         for (uint32_t index = 0; index < this->counterList; index++)
         {
+            printf("%s\n", this->sectionList[index]);
             if (strcmp(this->sectionList[index], sectionName) == 0)
             {
                 flag = true;
@@ -583,27 +584,30 @@ static bool keyExists(const char *sectionName, const char *key)
                     counter++;
                 else if(flag && strstr(lineStr, key) != NULL) 
                 {
+                    printf("find it \n");
                     fclose(readerFile);
-                    free(section);
+                    // free(section);
                     return true;
                 }
             }
 
             fclose(readerFile);
-            free(section);
+            // free(section);
         } 
         else 
         {
             fprintf(stderr, "Can not allocate memory\n");
             fclose(readerFile);
-            exit(-1);
+            return false;
         }
     } 
     else 
     {
         fprintf(stderr, "Can not open %s file\n", this->fileName);
-        exit(-1);
+        return false;
     }
 
+    fclose(readerFile);
     return false;
 }
+
