@@ -23,7 +23,7 @@ void initializeConfig(Config *configObject)
     configObject->backupConfig = backupConfig;
     configObject->loadBackup = loadBackup;
     configObject->clearSection = clearSection;
-    configObject->moveSection = moveSection;
+    configObject->renameSection = renameSection;
 
     this = configObject;
 }
@@ -911,7 +911,7 @@ static void clearSection(const char* sectionName)
     rename("temp.ini", this->fileName);
 }
 
-static void moveSection(const char *oldSectionName, const char *newSectionName) 
+static void renameSection(const char *oldSectionName, const char *newSectionName) 
 {
     FILE *readerFile = fopen(this->fileName, "r+");
     if (readerFile != NULL) 

@@ -19,6 +19,7 @@ typedef struct Config
     char keys[SECTION_SIZE][SECTION_SIZE];
     uint32_t counterList;
     uint32_t keysCounter;
+
     void (*setConfigFileName)(const char *configFileName);
     void (*addSection)(const char *sectionName);
     void (*set)(const char* sectionName, const char *key, const char *value);
@@ -38,7 +39,7 @@ typedef struct Config
     void (*backupConfig)();
     void (*loadBackup)();
     void (*clearSection)(const char* sectionName);
-    void (*moveSection)(const char *oldSectionName, const char *newSectionName);
+    void (*renameSection)(const char *oldSectionName, const char *newSectionName);
 
 } Config;
 #pragma pack (pop)
@@ -53,7 +54,7 @@ void writeSetForSection(const char* key, const char *value, const char *sectionN
 bool checkSet(const char* key, const char *value, const char* sectionName);
 char* substr(const char *src, int m, int n);
 
-static void moveSection(const char *oldSectionName, const char *newSectionName);
+static void renameSection(const char *oldSectionName, const char *newSectionName);
 static void clearSection(const char* sectionName);
 static void loadBackup();
 static void backupConfig();

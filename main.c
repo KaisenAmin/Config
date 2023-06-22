@@ -22,7 +22,7 @@ int main(int argc, char **argv)
     config.clearSection("Section1");
     config.showConfig();
 
-    config.moveSection("Section2", "Section3");
+    config.renameSection("Section2", "Section3");
     config.showConfig();
     
     getchar();
