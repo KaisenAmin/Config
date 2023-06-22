@@ -13,6 +13,7 @@ This is a C language library for managing configuration files. It provides funct
 * **Updating a key-value pair:** Update a specefic value from given section and key.
 * **Check if key-exists:** Check if specefic section and key is exists or not.
 * **Check if the configuration file is empty:** Use isEmpty() to check if the configuration file is empty (contains no sections) or not.
+* **Get keys from a section:** Retrieves and prints all keys in a specified section of the configuration file.
 
 ## Usage
 
@@ -85,4 +86,24 @@ First, initialize a `Config` object:
     else 
         printf("Config is not empty\n");
 
+    ```
+
+3. retrieve all keys from a section:
+
+    ```c
+    #include <stdio.h>
+    #include "Config.h"
+
+    int main(int argc, char **argv)
+    {
+        Config config;
+
+        initializeConfig(&config); // just belong this config 
+        config.setConfigFileName("config.ini");
+
+        config.getKeysFromSection("Language");
+        
+        getchar();
+        return 0;
+    }
     ```

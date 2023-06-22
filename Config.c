@@ -15,6 +15,7 @@ void initializeConfig(Config *configObject)
     configObject->update = update;
     configObject->keyExists = keyExists;
     configObject->isEmpty = isEmpty;
+    configObject->getKeysFromSection = getKeysFromSection;
 
     this = configObject;
 }
@@ -624,4 +625,43 @@ static bool isEmpty()
 
     // If the file size is 0, then the file is empty
     return fileSize == 0;
+}
+
+static void getKeysFromSection(const char *sectionName) 
+{
+    FILE *readerFile = fopen(this->fileName, "r");
+    char lineStr[SECTION_SIZE];
+    char *section = (char *) malloc(sizeof(char) * strlen(sectionName) + 3);
+
+    if (readerFile == NULL || section == NULL) 
+    {
+        fprintf(stderr, "Can not open file or allocate memory\n");
+        return;
+    }
+
+    sprintf(section, "[%s]", sectionName);
+    bool isInSection = false;
+
+    while (fgets(lineStr, SECTION_SIZE, readerFile) != NULL) 
+    {
+        // Remove trailing newline
+        lineStr[strcspn(lineStr, "\n")] = 0;
+
+        if (strstr(lineStr, section) != NULL)
+            isInSection = true;
+        else if (lineStr[0] == '[')
+            isInSection = false;
+        else if (isInSection && lineStr[0] != 0 && lineStr[0] != ';') 
+        {
+            // Found a key in the section. Print it out.
+            char* key = strtok(lineStr, "=");
+            if(key) 
+            {
+                printf("Key: %s\n", key);
+            }
+        }
+    }
+
+    fclose(readerFile);
+    free(section);
 }
