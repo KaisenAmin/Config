@@ -25,6 +25,7 @@ void initializeConfig(Config *configObject)
     configObject->clearSection = clearSection;
     configObject->renameSection = renameSection;
     configObject->renameKey = renameKey;
+    configObject->totalKeyCount = totalKeyCount;
 
     this = configObject;
 }
@@ -994,7 +995,7 @@ static void renameKey(const char *sectionName, const char *oldKeyName, const cha
         // If it's in the section, check if the line contains the old key
         if (isInSection && strstr(lineStr, oldKeyName) != NULL) 
         {
-            fprintf(tempFile, "\t%s = %s\n", newKeyName, strchr(lineStr, '=') + 1);
+            fprintf(tempFile, "\t%s =%s\n", newKeyName, strchr(lineStr, '=') + 1);
         } 
         else 
         {
@@ -1006,4 +1007,28 @@ static void renameKey(const char *sectionName, const char *oldKeyName, const cha
     fclose(tempFile);
     remove(this->fileName);
     rename("temp.ini", this->fileName);
+}
+
+static uint32_t totalKeyCount()
+{
+    uint32_t totalCount = 0;
+    FILE *file = fopen(this->fileName, "r");
+    
+    if (file == NULL) 
+    {
+        fprintf(stderr, "Cannot open the file %s\n", this->fileName);
+        return 0;
+    }
+
+    char lineStr[SECTION_SIZE + SECTION_SIZE];
+    while (fgets(lineStr, SECTION_SIZE + SECTION_SIZE, file) != NULL) 
+    {
+        if (strchr(lineStr, '=') != NULL) 
+        {
+            totalCount++;
+        }
+    }
+
+    fclose(file);
+    return totalCount;
 }

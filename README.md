@@ -29,6 +29,8 @@ This is a C language library for managing configuration files. It provides funct
 
 * **Rename Key Feature:**This feature is implemented as a function named renameKey, which provides the functionality to rename a key within a particular section in the configuration file.
 
+* **Total Key Count:**The totalKeyCount function provides a mechanism to count the total number of keys across all sections within the configuration file.
+
 ## Usage
 
 First, initialize a `Config` object:
@@ -369,4 +371,31 @@ First, initialize a `Config` object:
 
     config.renameKey("Section1", "key1", "key6");  // Rename key1 to key6 in Section1
     config.showConfig();
+    ```
+
+12. 'totalKeyCount' function get number of all keys in config file:
+
+    ```c
+    Config config;
+
+    initializeConfig(&config); // just belong this config 
+
+    config.setConfigFileName("config.ini");
+
+    config.addSection("Section1");
+    config.addSection("Section2");
+
+    config.set("Section1", "key1", "value1");
+    config.set("Section1", "key2", "value2");
+    config.set("Section1", "key3", "value3");
+    config.set("Section2", "key4", "value4");
+    config.set("Section2", "key5", "value5");
+
+    config.showConfig();
+
+    config.renameKey("Section1", "key1", "key6");  // Rename key1 to key6 in Section1
+    config.showConfig();
+
+    uint32_t totalKey = config.totalKeyCount();
+    printf("Total key count: %d\n", totalKey);
     ```

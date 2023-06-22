@@ -23,6 +23,9 @@ int main(int argc, char **argv)
     config.renameKey("Section1", "key1", "key6");  // Rename key1 to key6 in Section1
     config.showConfig();
 
+    uint32_t totalKey = config.totalKeyCount();
+    printf("Total key count: %d\n", totalKey);
+
     getchar();
     return 0;
 }

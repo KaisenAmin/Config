@@ -41,6 +41,7 @@ typedef struct Config
     void (*clearSection)(const char* sectionName);
     void (*renameSection)(const char *oldSectionName, const char *newSectionName);
     void (*renameKey)(const char *sectionName, const char *oldKeyName, const char *newKeyName);
+    uint32_t (*totalKeyCount)();
 
 } Config;
 #pragma pack (pop)
@@ -55,6 +56,7 @@ void writeSetForSection(const char* key, const char *value, const char *sectionN
 bool checkSet(const char* key, const char *value, const char* sectionName);
 char* substr(const char *src, int m, int n);
 
+static uint32_t totalKeyCount();
 static void renameKey(const char *sectionName, const char *oldKeyName, const char *newKeyName);
 static void renameSection(const char *oldSectionName, const char *newSectionName);
 static void clearSection(const char* sectionName);
