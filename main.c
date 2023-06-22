@@ -8,7 +8,10 @@ int main(int argc, char **argv)
     initializeConfig(&config); // just belong this config 
     config.setConfigFileName("config.ini");
 
-    config.getKeysFromSection("Language");
+    if (config.sectionExists("Section1"))
+        config.deleteSection("Section1");
+    else 
+        config.addSection("Section1");
     
     getchar();
     return 0;

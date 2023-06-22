@@ -14,6 +14,7 @@ This is a C language library for managing configuration files. It provides funct
 * **Check if key-exists:** Check if specefic section and key is exists or not.
 * **Check if the configuration file is empty:** Use isEmpty() to check if the configuration file is empty (contains no sections) or not.
 * **Get keys from a section:** Retrieves and prints all keys in a specified section of the configuration file.
+* **Check if a section exists:** This function checks if a specific section exists in the configuration file. This can be useful to avoid errors when trying to get or set keys in non-existent sections.
 
 ## Usage
 
@@ -102,6 +103,29 @@ First, initialize a `Config` object:
         config.setConfigFileName("config.ini");
 
         config.getKeysFromSection("Language");
+        
+        getchar();
+        return 0;
+    }
+    ```
+
+3. sectionExists function to check whether a certain section exists in the configuration file:
+
+    ```c
+    #include <stdio.h>
+    #include "Config.h"
+
+    int main(int argc, char **argv)
+    {
+        Config config;
+
+        initializeConfig(&config); // just belong this config 
+        config.setConfigFileName("config.ini");
+
+        if (config.sectionExists("Section1"))
+            config.deleteSection("Section1");
+        else 
+            config.addSection("Section1");
         
         getchar();
         return 0;

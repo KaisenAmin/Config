@@ -16,6 +16,7 @@ void initializeConfig(Config *configObject)
     configObject->keyExists = keyExists;
     configObject->isEmpty = isEmpty;
     configObject->getKeysFromSection = getKeysFromSection;
+    configObject->sectionExists = sectionExists;
 
     this = configObject;
 }
@@ -664,4 +665,49 @@ static void getKeysFromSection(const char *sectionName)
 
     fclose(readerFile);
     free(section);
+}
+
+static bool sectionExists(const char *sectionName) 
+{
+    FILE *readerFile = fopen(this->fileName, "r");
+
+    if (readerFile != NULL) 
+    {
+        char lineStr[SECTION_SIZE + SECTION_SIZE];
+        char *section = (char *) malloc(sizeof(char) * strlen(sectionName) + 3);
+
+        if (section != NULL) 
+        {
+            sprintf(section, "[%s]", sectionName);
+            
+            while (fgets(lineStr, SECTION_SIZE + SECTION_SIZE, readerFile) != NULL) 
+            {
+                if (strstr(lineStr, section) != NULL) 
+                {
+                    printf("Section found \n");
+
+                    fclose(readerFile);
+                    free(section);
+
+                    return true;
+                }
+            }
+
+            fclose(readerFile);
+            free(section);
+        } 
+        else 
+        {
+            fprintf(stderr, "Cannot allocate memory\n");
+            fclose(readerFile);
+            return false;
+        }
+    } 
+    else 
+    {
+        fprintf(stderr, "Cannot open %s file\n", this->fileName);
+        return false;
+    }
+
+    return false;
 }
