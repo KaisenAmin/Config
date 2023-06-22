@@ -31,6 +31,7 @@ This is a C language library for managing configuration files. It provides funct
 
 * **Total Key Count:**The totalKeyCount function provides a mechanism to count the total number of keys across all sections within the configuration file.
 
+* **Merge New Sections:** merge two files and add new sections with keys and values to main config.
 ## Usage
 
 First, initialize a `Config` object:
@@ -398,4 +399,24 @@ First, initialize a `Config` object:
 
     uint32_t totalKey = config.totalKeyCount();
     printf("Total key count: %d\n", totalKey);
+    ```
+
+13. "merge" function:
+
+    ```c
+    #include <stdio.h>
+    #include "Config.h"
+
+    int main(int argc, char **argv)
+    {
+        Config config;
+
+        initializeConfig(&config); // just belong this config 
+
+        config.setConfigFileName("config.ini");
+        config.merge("merge.ini");
+
+        getchar();
+        return 0;
+    }
     ```
