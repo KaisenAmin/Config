@@ -30,6 +30,9 @@ int main(int argc, char **argv)
     
     config.deleteSection("Amin");
 
+    // update a key-value pair
+    config.update("Language", "lang", "C++");
+
     printf("%s\n", config.get("Language", "jobs"));
     printf("%s\n", config.get("Jobs", "jobss"));
     // the following two will print nothing as the section "Amin" has been deleted

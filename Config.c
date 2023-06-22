@@ -12,6 +12,8 @@ void initializeConfig(Config *configObject)
     configObject->keysCounter = 0;
     configObject->deleteSection = deleteSection;
     configObject->deleteKey = deleteKey;
+    configObject->update = update;
+
 
     this = configObject;
 }
@@ -496,4 +498,59 @@ static void deleteKey(const char *sectionName, const char *key)
     // Replace the original file with the temp file
     remove(this->fileName);
     rename("temp.ini", this->fileName);
+}
+
+static void update(const char* sectionName, const char *key, const char *value) 
+{
+    FILE *readerFile = fopen(this->fileName, "r");
+    FILE *tempFile = fopen("temp.ini", "w");
+
+    if (readerFile != NULL && tempFile != NULL) 
+    {
+        char lineStr[2 * SECTION_SIZE];
+        char *section = (char *) malloc(sizeof(char) * strlen(sectionName) + 3);
+        sprintf(section, "[%s]", sectionName);
+        bool inSection = false;
+
+        while (fgets(lineStr, 2 * SECTION_SIZE, readerFile) != NULL) 
+        {
+            // Check if we're in the section we're interested in
+            if (strstr(lineStr, section) != NULL) 
+            {
+                inSection = true;
+            } 
+            else if (strstr(lineStr, "[") != NULL) 
+            {
+                inSection = false;
+            }
+
+            // If we're in the section, check if the line contains the key
+            if (inSection && strstr(lineStr, key) != NULL) 
+            {
+                // If it does, replace the value
+                char* equalsSignPos = strchr(lineStr, '=');
+                if (equalsSignPos != NULL) 
+                {
+                    // Write the key and new value to the line
+                    sprintf(equalsSignPos + 1, " \"%s\"\n", value);
+                }
+            }
+
+            // Write the line (possibly updated) to the temp file
+            fputs(lineStr, tempFile);
+        }
+
+        free(section);
+        fclose(readerFile);
+        fclose(tempFile);
+
+        // Replace the old file with the updated one
+        remove(this->fileName);
+        rename("temp.ini", this->fileName);
+    } 
+    else 
+    {
+        fprintf(stderr, "Could not open file for reading/updating\n");
+        exit(-1);
+    }
 }
