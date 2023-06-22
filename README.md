@@ -10,7 +10,8 @@ This is a C language library for managing configuration files. It provides funct
 * **Setting a value:** Set a new key-value pair in a specified section, or update the value if the key already exists.
 * **Deleting a section:** Delete a specified section from the configuration file, along with all the key-value pairs within it.
 * **Deleting a key-value pair:** Delete a specific key-value pair from a given section.
-* **Updating a key-value pair:** Update a specefic value from given section and key,
+* **Updating a key-value pair:** Update a specefic value from given section and key.
+* **Check if key-exists:** Check if specefic section and key is exists or not.
 
 ## Usage
 
@@ -55,6 +56,11 @@ First, initialize a `Config` object:
 
         // update a key-value pair
         config.update("Language", "lang", "C++");
+
+        if (config.keyExists("Language1", "lang"))
+            printf("Key exists\n");
+        else
+            printf("Key does not exist\n");
 
         printf("%s\n", config.get("Language", "jobs"));
         printf("%s\n", config.get("Jobs", "jobss"));

@@ -33,7 +33,13 @@ int main(int argc, char **argv)
     // update a key-value pair
     config.update("Language", "lang", "C++");
 
-    printf("%s\n", config.get("Language", "jobs"));
+    if (config.keyExists("Language1", "lang"))
+        printf("Key exists\n");
+    else
+        printf("Key does not exist\n");
+
+
+    printf("%s\n", config.get("Language1", "jobs"));
     printf("%s\n", config.get("Jobs", "jobss"));
     // the following two will print nothing as the section "Amin" has been deleted
     printf("%s\n", config.get("Amin", "Ip"));

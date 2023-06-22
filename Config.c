@@ -13,7 +13,7 @@ void initializeConfig(Config *configObject)
     configObject->deleteSection = deleteSection;
     configObject->deleteKey = deleteKey;
     configObject->update = update;
-
+    configObject->keyExists = keyExists;
 
     this = configObject;
 }
@@ -553,4 +553,57 @@ static void update(const char* sectionName, const char *key, const char *value)
         fprintf(stderr, "Could not open file for reading/updating\n");
         exit(-1);
     }
+}
+
+static bool keyExists(const char *sectionName, const char *key) 
+{
+    FILE *readerFile = fopen(this->fileName, "r");
+
+    if (readerFile != NULL) 
+    {
+        char lineStr[SECTION_SIZE + SECTION_SIZE];
+        char *section = (char *) malloc(sizeof(char) * strlen(sectionName) + 3);
+
+        if (section != NULL) 
+        {
+            sprintf(section, "[%s]", sectionName);
+            bool flag = false;
+            uint32_t counter = 0;
+
+            while (fgets(lineStr, SECTION_SIZE + SECTION_SIZE, readerFile) != NULL) 
+            {
+                if (counter == 2 && flag)
+                    break;
+                if (strstr(lineStr, section) != NULL) 
+                {
+                    flag = true;
+                    counter++;
+                }
+                else if (strstr(lineStr, "[") != NULL && flag)
+                    counter++;
+                else if(flag && strstr(lineStr, key) != NULL) 
+                {
+                    fclose(readerFile);
+                    free(section);
+                    return true;
+                }
+            }
+
+            fclose(readerFile);
+            free(section);
+        } 
+        else 
+        {
+            fprintf(stderr, "Can not allocate memory\n");
+            fclose(readerFile);
+            exit(-1);
+        }
+    } 
+    else 
+    {
+        fprintf(stderr, "Can not open %s file\n", this->fileName);
+        exit(-1);
+    }
+
+    return false;
 }

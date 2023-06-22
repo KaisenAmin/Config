@@ -28,7 +28,7 @@ typedef struct Config
     void (*deleteSection)(const char *sectionName);
     void (*deleteKey)(const char *sectionName, const char *key);
     void (*update)(const char* sectionName, const char *key, const char *value);
-
+    bool (*keyExists)(const char *sectionName, const char *key);
     
 } Config;
 #pragma pack (pop)
@@ -43,6 +43,7 @@ void writeSetForSection(const char* key, const char *value, const char *sectionN
 bool checkSet(const char* key, const char *value, const char* sectionName);
 char* substr(const char *src, int m, int n);
 
+static bool keyExists(const char *sectionName, const char *key);
 static void update(const char* sectionName, const char *key, const char *value);
 static void deleteKey(const char *sectionName, const char *key);
 static void deleteSection(const char *sectionName);
