@@ -9,6 +9,7 @@ This is a C language library for managing configuration files. It provides funct
 * **Retrieving a value:** Retrieve the value associated with a given key in a specified section.
 * **Setting a value:** Set a new key-value pair in a specified section, or update the value if the key already exists.
 * **Deleting a section:** Delete a specified section from the configuration file, along with all the key-value pairs within it.
+* **Deleting a key-value pair:** Delete a specific key-value pair from a given section.
 
 ## Usage
 
@@ -16,7 +17,7 @@ First, initialize a `Config` object:
 
 ### Examples 
 
-1. create and add section also deleteSection 
+1. Create, add sections, delete sections, and delete a key-value pair 
 
     ```c
     #include <stdio.h>
@@ -45,10 +46,14 @@ First, initialize a `Config` object:
         config.set("Amin", "Ip", "192.168.90.90");
         config.set("Love", "person", "I dont know");
         
+        // delete a key-value pair
+        config.deleteKey("Language", "Web");
+
         config.deleteSection("Amin");
 
         printf("%s\n", config.get("Language", "jobs"));
         printf("%s\n", config.get("Jobs", "jobss"));
+        // the following two will print nothing as the section "Amin" has been deleted
         printf("%s\n", config.get("Amin", "Ip"));
         printf("%s\n", config.get("Amin", "Best"));
 

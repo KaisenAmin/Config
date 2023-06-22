@@ -11,6 +11,7 @@ void initializeConfig(Config *configObject)
     configObject->counterList = 0;
     configObject->keysCounter = 0;
     configObject->deleteSection = deleteSection;
+    configObject->deleteKey = deleteKey;
 
     this = configObject;
 }
@@ -447,4 +448,52 @@ static void deleteSection(const char *sectionName)
         fprintf(stderr, "Can not open %s file\n", this->fileName);
         exit(-1);
     }
+}
+
+static void deleteKey(const char *sectionName, const char *key) 
+{
+    if (sectionName == NULL || key == NULL) 
+    {
+        fprintf(stderr, "Section name or key is NULL\n");
+        exit(-1);
+    }
+
+    FILE *readerFile = fopen(this->fileName, "r");
+    FILE *tempFile = fopen("temp.ini", "w");
+
+    if (readerFile == NULL || tempFile == NULL) 
+    {
+        fprintf(stderr, "Cannot open file\n");
+        exit(-1);
+    }
+
+    char lineStr[SECTION_SIZE + SECTION_SIZE];
+    char *section = (char *)malloc(sizeof(char) * strlen(sectionName) + 3);
+    sprintf(section, "[%s]", sectionName);
+    bool isInSection = false;
+
+    while (fgets(lineStr, SECTION_SIZE + SECTION_SIZE, readerFile) != NULL) 
+    {
+        if (strstr(lineStr, section) != NULL)
+        {
+            isInSection = true;
+        }
+        else if (strstr(lineStr, "[") != NULL && isInSection)
+        {
+            isInSection = false;
+        }
+
+        if (!isInSection || (isInSection && strstr(lineStr, key) == NULL))
+        {
+            fprintf(tempFile, "%s", lineStr);
+        }
+    }
+
+    free(section);
+    fclose(readerFile);
+    fclose(tempFile);
+
+    // Replace the original file with the temp file
+    remove(this->fileName);
+    rename("temp.ini", this->fileName);
 }
