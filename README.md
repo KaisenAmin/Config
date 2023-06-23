@@ -32,6 +32,9 @@ This is a C language library for managing configuration files. It provides funct
 * **Total Key Count:**The totalKeyCount function provides a mechanism to count the total number of keys across all sections within the configuration file.
 
 * **Merge New Sections:** merge two files and add new sections with keys and values to main config.
+
+* **Save Config As new:** save the main Config file as new name and delete old one.
+
 ## Usage
 
 First, initialize a `Config` object:
@@ -419,4 +422,16 @@ First, initialize a `Config` object:
         getchar();
         return 0;
     }
+    ```
+
+14. "saveConfigAs" change name of main config file to new name:
+
+    ```c
+    Config config;
+
+    initializeConfig(&config); // just belong this config 
+
+    config.setConfigFileName("config.ini");
+    config.saveConfigAs("config2.ini");
+
     ```
