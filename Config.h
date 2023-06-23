@@ -46,6 +46,7 @@ typedef struct Config
     void (*renameKey)(const char *sectionName, const char *oldKeyName, const char *newKeyName);
     uint32_t (*totalKeyCount)();
     void (*merge)(const char* importFileName);
+    void (*saveConfigAs)(const char *newFileName);
 
 } Config;
 #pragma pack (pop)
@@ -60,8 +61,9 @@ void writeSetForSection(const char* key, const char *value, const char *sectionN
 bool checkSet(const char* key, const char *value, const char* sectionName);
 char* substr(const char *src, int m, int n);
 char* trim(char* s);
-void writeToFile(const char *sectionName, const char *key, const char *value);
 
+
+static void saveConfigAs(const char *newFileName);
 static void merge(const char* importFileName);
 static uint32_t totalKeyCount();
 static void renameKey(const char *sectionName, const char *oldKeyName, const char *newKeyName);

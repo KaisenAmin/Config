@@ -27,6 +27,7 @@ void initializeConfig(Config *configObject)
     configObject->renameKey = renameKey;
     configObject->totalKeyCount = totalKeyCount;
     configObject->merge = merge;
+    configObject->saveConfigAs = saveConfigAs;
 
     this = configObject;
 }
@@ -1101,4 +1102,36 @@ static void merge(const char* importFileName)
     fclose(importFile);
 }
 
+static void saveConfigAs(const char *newFileName) 
+{
+    // Open the original file
+    FILE *originalFile = fopen(this->fileName, "r");
+    if (!originalFile) 
+    {
+        fprintf(stderr, "Cannot open original file: %s\n", this->fileName);
+        return;
+    }
 
+    // Open the new file
+    FILE *newFile = fopen(newFileName, "w");
+    if (!newFile) 
+    {
+        fprintf(stderr, "Cannot open new file: %s\n", newFileName);
+        fclose(originalFile);
+        return;
+    }
+
+    char ch;
+    // Copy the original file to the new file
+    while ((ch = fgetc(originalFile)) != EOF) 
+        fputc(ch, newFile);
+
+    fclose(originalFile);
+    fclose(newFile);
+
+    // Delete the original file
+    if (remove(this->fileName) == 0) 
+        printf("Deleted successfully\n");
+    else 
+        fprintf(stderr, "Unable to delete the file\n");
+}

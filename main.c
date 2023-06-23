@@ -8,7 +8,7 @@ int main(int argc, char **argv)
     initializeConfig(&config); // just belong this config 
 
     config.setConfigFileName("config.ini");
-    config.merge("merge.ini");
+    config.saveConfigAs("config2.ini");
 
     getchar();
     return 0;
