@@ -35,9 +35,16 @@ This is a C language library for managing configuration files. It provides funct
 
 * **Save Config As new:** save the main Config file as new name and delete old one.
 
+## Building
+
+```sh
+make
+make test
+```
+
 ## Usage
 
-First, initialize a `Config` object:
+First, initialize a `Config` object with `initializeConfig`, then call `setConfigFileName`. The file is loaded into memory and every change is saved back to the file right away. `set` creates the section if it does not exist yet and replaces the value when the key already exists. Comments (`;` or `#`) in the file are kept. The functions work on the last initialized `Config`. Call `destroyConfig(&config)` when you are done.
 
 ### Examples 
 

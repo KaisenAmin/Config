@@ -1,2 +1,8 @@
 *.exe
-*.vscode
+*.o
+.vscode/
+main
+tests/test_config
+config.ini
+*.bak
+tests/tmp_*

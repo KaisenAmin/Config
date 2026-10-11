@@ -1,91 +1,47 @@
-#ifndef Config_H_
-#define Config_H_
+#ifndef CONFIG_H_
+#define CONFIG_H_
 
+#include <stdbool.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <stdint.h>
-#include <stdbool.h>
-#include <direct.h>
-#include <ctype.h>
 
-#define BRACET_NUMBER 2
-#define SECTION_SIZE 256
-#define MAX_LINES 1000
-#define LINE_SIZE 1000
+#define CONFIG_FILE_NAME_SIZE 256
 
-#pragma pack (push, 1)
+typedef struct ConfigData ConfigData;
+
 typedef struct Config
 {
-    char fileName[256];
-    char sectionList[SECTION_SIZE][SECTION_SIZE];
-    char keys[SECTION_SIZE][SECTION_SIZE];
-    uint32_t counterList;
-    uint32_t keysCounter;
+    char fileName[CONFIG_FILE_NAME_SIZE];
+    ConfigData *data;
 
     void (*setConfigFileName)(const char *configFileName);
     void (*addSection)(const char *sectionName);
-    void (*set)(const char* sectionName, const char *key, const char *value);
-    void (*showConfig)();
+    void (*set)(const char *sectionName, const char *key, const char *value);
+    void (*showConfig)(void);
     void (*writeConfig)(const char *config, const char *fileMode);
-    char* (*get)(const char *sectionName, const char *key);
+    char *(*get)(const char *sectionName, const char *key);
     void (*deleteSection)(const char *sectionName);
     void (*deleteKey)(const char *sectionName, const char *key);
-    void (*update)(const char* sectionName, const char *key, const char *value);
+    void (*update)(const char *sectionName, const char *key, const char *value);
     bool (*keyExists)(const char *sectionName, const char *key);
-    bool (*isEmpty)();
+    bool (*isEmpty)(void);
     void (*getKeysFromSection)(const char *sectionName);
     bool (*sectionExists)(const char *sectionName);
     uint32_t (*keyCount)(const char *sectionName);
-    uint32_t (*sectionCount)();
-    void (*clearConfig)();
-    void (*backupConfig)();
-    void (*loadBackup)();
-    void (*clearSection)(const char* sectionName);
+    uint32_t (*sectionCount)(void);
+    void (*clearConfig)(void);
+    void (*backupConfig)(void);
+    void (*loadBackup)(void);
+    void (*clearSection)(const char *sectionName);
     void (*renameSection)(const char *oldSectionName, const char *newSectionName);
     void (*renameKey)(const char *sectionName, const char *oldKeyName, const char *newKeyName);
-    uint32_t (*totalKeyCount)();
-    void (*merge)(const char* importFileName);
+    uint32_t (*totalKeyCount)(void);
+    void (*merge)(const char *importFileName);
     void (*saveConfigAs)(const char *newFileName);
-
 } Config;
-#pragma pack (pop)
-
-static Config *this;
 
 void initializeConfig(Config *configObject);
-bool checkSectionList(const char* sectionName);
-bool checkSectionInFile(const char* sectionName);
-void searchSectionInFile(const char* sectionName, int *position, int *fileCursorPos);
-void writeSetForSection(const char* key, const char *value, const char *sectionName, uint32_t pos, int fileCursorPos);
-bool checkSet(const char* key, const char *value, const char* sectionName);
-char* substr(const char *src, int m, int n);
-char* trim(char* s);
+void destroyConfig(Config *configObject);
 
-
-static void saveConfigAs(const char *newFileName);
-static void merge(const char* importFileName);
-static uint32_t totalKeyCount();
-static void renameKey(const char *sectionName, const char *oldKeyName, const char *newKeyName);
-static void renameSection(const char *oldSectionName, const char *newSectionName);
-static void clearSection(const char* sectionName);
-static void loadBackup();
-static void backupConfig();
-static void clearConfig();
-static uint32_t sectionCount();
-static uint32_t keyCount(const char *sectionName);
-static bool sectionExists(const char *sectionName);
-static void getKeysFromSection(const char *sectionName);
-static bool isEmpty();
-static bool keyExists(const char *sectionName, const char *key);
-static void update(const char* sectionName, const char *key, const char *value);
-static void deleteKey(const char *sectionName, const char *key);
-static void deleteSection(const char *sectionName);
-static void setFileName(const char *configFileName);
-static void addSection(const char *sectionName);
-static void set(const char* sectionName, const char *key, const char *value);
-static char *get(const char *sectionName, const char *key);
-static void readFile();
-static void writeFile(const char *config, const char *fileMode);
-
-#endif 
+#endif
